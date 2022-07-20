@@ -1,31 +1,20 @@
 class BookmarksController < ApplicationController
-  before_action :set_bookmark, only: %i[show edit update destroy]
-
-  def index
-    @bookmarks = bookmark.all
-  end
-
-  def show; end
+  before_action :set_bookmark, only: %i[destroy]
 
   def new
     @bookmark = Bookmark.new
+    @lists = List.find(params[:list_id])
   end
 
   def create
     @bookmark = Bookmark.new(bookmark_params)
+    @list = List.find(params[:list_id])
+    @bookmark.list = @list
     if @bookmark.save
-      redirect_to bookmark_path(@bookmark)
+      redirect_to @list
     else
-      render "new"
+      render :new
     end
-  end
-
-  def edit; end
-
-  def update
-    @bookmark.update(bookmark_params)
-    # redirect_to bookmark_path(@bookmark)
-    redirect_to @bookmark
   end
 
   def destroy
@@ -36,10 +25,12 @@ class BookmarksController < ApplicationController
   private
 
   def bookmark_params
-    params.require(:bookmark).permit(:name)
+    params.require(:bookmark).permit(:comment)
   end
 
   def set_bookmark
-    @bookmark = bookmark.find(params[:id])
+    @bookmark = Bookmark.find(params[:id, :movie_id])
   end
 end
+
+comment
